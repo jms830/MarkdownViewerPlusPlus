@@ -24,7 +24,14 @@ A Notepad++ Plugin to view a Markdown file rendered on-the-fly
 Download the latest [release here][9]. For a full version history go [here][10].
 
 ## Installation
-Download a [release version][9] and copy the included **MarkdownViewerPlusPlus.dll** to the *plugins* sub-folder at your Notepad++ installation directory. The plugin adds a small Markdown icon ![Markdown icon](https://raw.githubusercontent.com/nea/MarkdownViewerPlusPlus/master/MarkdownViewerPlusPlus/Resources/markdown-16x16-solid.png) to the toolbar to toggle the viewer as dockable panel.
+Download a [release version][9], create a directory named **MarkdownViewerPlusPlus** in the *plugins* subfolder at your Notepad++ installation directory, and copy the included **MarkdownViewerPlusPlus.dll** into that directory. The plugin adds a small Markdown icon ![Markdown icon](https://raw.githubusercontent.com/nea/MarkdownViewerPlusPlus/master/MarkdownViewerPlusPlus/Resources/markdown-16x16-solid.png) to the toolbar to toggle the viewer as dockable panel.
+
+```
+Notepad++/
+  plugins/
+    MarkdownViewerPlusPlus/
+      MarkdownViewerPlusPlus.dll
+```
 
 ### Plugin Manager
 If you have the [Plugin Manager][13] installed you can search for MarkdownViewer++ and install it via that plugin.
