@@ -1,4 +1,649 @@
-﻿/* Avoid page breaks inside the most common attributes, especially for exports (i.e. PDF) */
-td, h1, h2, h3, h4, h5, p, ul, ol, li {
-    page-break-inside: avoid; 
+/* MarkdownViewer++ Modern Stylesheet
+ * GitHub-inspired styling with clean, readable typography
+ * Supports both light and dark modes via CSS variables
+ */
+
+/* ==========================================================================
+   CSS Variables - Theme Colors
+   ========================================================================== */
+:root {
+    /* Light mode (default) */
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f6f8fa;
+    --color-bg-tertiary: #eaeef2;
+    --color-text: #1f2328;
+    --color-text-secondary: #656d76;
+    --color-text-muted: #848d97;
+    --color-border: #d0d7de;
+    --color-border-muted: #d8dee4;
+    --color-link: #0969da;
+    --color-link-hover: #0550ae;
+    --color-code-bg: rgba(175, 184, 193, 0.2);
+    --color-code-text: #1f2328;
+    --color-blockquote-border: #d0d7de;
+    --color-blockquote-text: #656d76;
+    --color-table-header-bg: #f6f8fa;
+    --color-table-row-alt: #f6f8fa;
+    --color-kbd-bg: #f6f8fa;
+    --color-kbd-border: rgba(175, 184, 193, 0.2);
+    --color-mark-bg: #fff8c5;
+    --color-hr: #d8dee4;
+    --color-success: #1a7f37;
+    --color-warning: #9a6700;
+    --color-danger: #cf222e;
+    --shadow-sm: 0 1px 0 rgba(31, 35, 40, 0.04);
+    --shadow-md: 0 3px 6px rgba(140, 149, 159, 0.15);
+}
+
+/* Dark mode - auto-detect system preference */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-bg: #0d1117;
+        --color-bg-secondary: #161b22;
+        --color-bg-tertiary: #21262d;
+        --color-text: #e6edf3;
+        --color-text-secondary: #8b949e;
+        --color-text-muted: #6e7681;
+        --color-border: #30363d;
+        --color-border-muted: #21262d;
+        --color-link: #58a6ff;
+        --color-link-hover: #79c0ff;
+        --color-code-bg: rgba(110, 118, 129, 0.4);
+        --color-code-text: #e6edf3;
+        --color-blockquote-border: #3b434b;
+        --color-blockquote-text: #8b949e;
+        --color-table-header-bg: #161b22;
+        --color-table-row-alt: #161b22;
+        --color-kbd-bg: #161b22;
+        --color-kbd-border: rgba(110, 118, 129, 0.4);
+        --color-mark-bg: rgba(187, 128, 9, 0.4);
+        --color-hr: #30363d;
+        --color-success: #3fb950;
+        --color-warning: #d29922;
+        --color-danger: #f85149;
+        --shadow-sm: 0 0 transparent;
+        --shadow-md: 0 0 transparent;
+    }
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    margin: 0;
+    padding: 24px 32px;
+    max-width: 980px;
+    word-wrap: break-word;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-text);
+    page-break-inside: avoid;
+    page-break-after: avoid;
+}
+
+h1 {
+    font-size: 2em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--color-border);
+}
+
+h2 {
+    font-size: 1.5em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--color-border);
+}
+
+h3 {
+    font-size: 1.25em;
+}
+
+h4 {
+    font-size: 1em;
+}
+
+h5 {
+    font-size: 0.875em;
+}
+
+h6 {
+    font-size: 0.85em;
+    color: var(--color-text-secondary);
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 16px;
+    page-break-inside: avoid;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+a {
+    color: var(--color-link);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+}
+
+a:focus {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+ul, ol {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-left: 2em;
+    page-break-inside: avoid;
+}
+
+ul ul, ul ol, ol ul, ol ol {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+li {
+    margin-top: 0.25em;
+    page-break-inside: avoid;
+}
+
+li > p {
+    margin-top: 16px;
+}
+
+li + li {
+    margin-top: 0.25em;
+}
+
+/* Task lists (checkboxes) */
+ul.contains-task-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+li.task-list-item {
+    position: relative;
+    padding-left: 1.75em;
+}
+
+input[type="checkbox"] {
+    position: absolute;
+    left: 0;
+    top: 0.3em;
+    margin: 0;
+    width: 1em;
+    height: 1em;
+    accent-color: var(--color-link);
+}
+
+/* Definition lists */
+dl {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding: 0;
+}
+
+dt {
+    font-weight: 600;
+    margin-top: 16px;
+    padding: 0;
+}
+
+dd {
+    margin-left: 0;
+    margin-bottom: 16px;
+    padding: 0 16px;
+}
+
+/* ==========================================================================
+   Tables - Modern GitHub Style
+   ========================================================================== */
+table {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0;
+    margin-bottom: 16px;
+    border-spacing: 0;
+    border-collapse: collapse;
+    overflow: auto;
+    display: block;
+    font-size: 0.875em;
+}
+
+table th {
+    font-weight: 600;
+    background-color: var(--color-table-header-bg);
+    color: var(--color-text);
+}
+
+table th, table td {
+    padding: 10px 16px;
+    border: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+    page-break-inside: avoid;
+}
+
+table tr {
+    background-color: var(--color-bg);
+    border-top: 1px solid var(--color-border-muted);
+    transition: background-color 0.15s ease;
+}
+
+table tr:nth-child(2n) {
+    background-color: var(--color-table-row-alt);
+}
+
+table tr:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+/* Table alignment */
+table th[align="center"], table td[align="center"] {
+    text-align: center;
+}
+
+table th[align="right"], table td[align="right"] {
+    text-align: right;
+}
+
+/* ==========================================================================
+   Code - Inline and Blocks
+   ========================================================================== */
+code, kbd, samp, tt {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.875em;
+}
+
+/* Inline code */
+code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    background-color: var(--color-code-bg);
+    color: var(--color-code-text);
+    border-radius: 6px;
+    white-space: break-spaces;
+}
+
+/* Code blocks */
+pre {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding: 16px;
+    overflow: auto;
+    font-size: 0.85em;
+    line-height: 1.45;
+    background-color: var(--color-bg-secondary);
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    page-break-inside: avoid;
+}
+
+pre code {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    font-size: 1em;
+    line-height: inherit;
+    word-wrap: normal;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+/* Keyboard input */
+kbd {
+    display: inline-block;
+    padding: 3px 6px;
+    font-size: 0.75em;
+    line-height: 1;
+    color: var(--color-text);
+    vertical-align: middle;
+    background-color: var(--color-kbd-bg);
+    border: 1px solid var(--color-kbd-border);
+    border-bottom-color: var(--color-border);
+    border-radius: 6px;
+    box-shadow: inset 0 -1px 0 var(--color-border);
+}
+
+/* ==========================================================================
+   Blockquotes
+   ========================================================================== */
+blockquote {
+    margin: 0 0 16px 0;
+    padding: 0 1em;
+    color: var(--color-blockquote-text);
+    border-left: 4px solid var(--color-blockquote-border);
+}
+
+blockquote > :first-child {
+    margin-top: 0;
+}
+
+blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+/* Nested blockquotes */
+blockquote blockquote {
+    margin-left: 0;
+}
+
+/* ==========================================================================
+   Horizontal Rules
+   ========================================================================== */
+hr {
+    height: 0.25em;
+    margin: 24px 0;
+    padding: 0;
+    background-color: var(--color-hr);
+    border: 0;
+    border-radius: 2px;
+}
+
+/* ==========================================================================
+   Images and Media
+   ========================================================================== */
+img {
+    max-width: 100%;
+    height: auto;
+    border-style: none;
+    border-radius: 6px;
+    box-sizing: content-box;
+    background-color: var(--color-bg);
+}
+
+/* Image in link */
+a img {
+    border: 0;
+}
+
+/* Figures */
+figure {
+    margin: 1em 0;
+}
+
+figcaption {
+    font-size: 0.875em;
+    color: var(--color-text-secondary);
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* ==========================================================================
+   Forms and Inputs
+   ========================================================================== */
+input, button, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/* ==========================================================================
+   Miscellaneous Elements
+   ========================================================================== */
+
+/* Abbreviations */
+abbr[title] {
+    text-decoration: underline dotted;
+    cursor: help;
+    border-bottom: none;
+}
+
+/* Marked/Highlighted text */
+mark {
+    background-color: var(--color-mark-bg);
+    color: var(--color-text);
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
+}
+
+/* Small text */
+small {
+    font-size: 0.875em;
+}
+
+/* Subscript and Superscript */
+sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+sup {
+    top: -0.5em;
+}
+
+/* Strikethrough */
+del, s {
+    color: var(--color-text-secondary);
+}
+
+/* Inserted text */
+ins {
+    text-decoration: none;
+    background-color: rgba(46, 160, 67, 0.15);
+}
+
+/* ==========================================================================
+   Details/Summary (Collapsible sections)
+   ========================================================================== */
+details {
+    margin-bottom: 16px;
+}
+
+details summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 8px 0;
+    list-style: none;
+}
+
+details summary::-webkit-details-marker {
+    display: none;
+}
+
+details summary::before {
+    content: "\25B6";
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 0.75em;
+    transition: transform 0.2s ease;
+}
+
+details[open] summary::before {
+    transform: rotate(90deg);
+}
+
+details > *:not(summary) {
+    margin-left: 1.5em;
+}
+
+/* ==========================================================================
+   Alerts/Admonitions (GitHub-style)
+   ========================================================================== */
+.markdown-alert {
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    border-left: 4px solid;
+    border-radius: 6px;
+}
+
+.markdown-alert-note {
+    border-color: var(--color-link);
+    background-color: rgba(9, 105, 218, 0.1);
+}
+
+.markdown-alert-tip {
+    border-color: var(--color-success);
+    background-color: rgba(26, 127, 55, 0.1);
+}
+
+.markdown-alert-important {
+    border-color: #8250df;
+    background-color: rgba(130, 80, 223, 0.1);
+}
+
+.markdown-alert-warning {
+    border-color: var(--color-warning);
+    background-color: rgba(154, 103, 0, 0.1);
+}
+
+.markdown-alert-caution {
+    border-color: var(--color-danger);
+    background-color: rgba(207, 34, 46, 0.1);
+}
+
+/* ==========================================================================
+   Footnotes
+   ========================================================================== */
+.footnotes {
+    font-size: 0.875em;
+    color: var(--color-text-secondary);
+    border-top: 1px solid var(--color-border);
+    margin-top: 32px;
+    padding-top: 16px;
+}
+
+.footnotes ol {
+    padding-left: 1.5em;
+}
+
+.footnote-ref {
+    font-size: 0.75em;
+    vertical-align: super;
+}
+
+.footnote-backref {
+    font-family: inherit;
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+@media print {
+    body {
+        background-color: white;
+        color: black;
+        padding: 0;
+        max-width: none;
+    }
+    
+    a {
+        color: black;
+        text-decoration: underline;
+    }
+    
+    pre, code {
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+    }
+    
+    table th, table td {
+        border: 1px solid #000;
+    }
+    
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+    }
+    
+    /* Avoid page breaks inside common elements */
+    td, h1, h2, h3, h4, h5, p, ul, ol, li, pre, blockquote, table {
+        page-break-inside: avoid;
+    }
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+    
+    table {
+        font-size: 0.8em;
+    }
+    
+    table th, table td {
+        padding: 6px 10px;
+    }
+}
+
+/* ==========================================================================
+   Selection Styles
+   ========================================================================== */
+::selection {
+    background-color: rgba(9, 105, 218, 0.3);
+    color: inherit;
+}
+
+::-moz-selection {
+    background-color: rgba(9, 105, 218, 0.3);
+    color: inherit;
+}
+
+/* ==========================================================================
+   Scrollbar Styles (WebKit browsers)
+   ========================================================================== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg-secondary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
 }
