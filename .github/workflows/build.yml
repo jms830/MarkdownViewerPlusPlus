@@ -34,7 +34,8 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "Downloading DllExport.bat manager..."
-          Invoke-WebRequest -Uri "https://3F.github.io/DllExport/releases/latest/manager/" -OutFile "DllExport.bat"
+          # Use direct GitHub releases URL (the github.io URL redirects and may fail)
+          Invoke-WebRequest -Uri "https://github.com/3F/DllExport/releases/download/1.8.1/DllExport.bat" -OutFile "DllExport.bat"
           if (Test-Path "DllExport.bat") {
             Write-Host "DllExport.bat downloaded successfully"
             Get-Item "DllExport.bat" | Select-Object Name, Length
