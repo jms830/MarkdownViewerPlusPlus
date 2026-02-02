@@ -28,10 +28,10 @@ jobs:
         uses: NuGet/setup-nuget@v2
       
       - name: Restore NuGet packages (packages.config)
-        run: nuget restore MarkdownViewerPlusPlus.sln -PackagesDirectory packages
+        run: nuget restore MarkdownViewerPlusPlus/packages.config -PackagesDirectory packages -SolutionDirectory .
       
       - name: Restore PackageReferences
-        run: msbuild /t:Restore MarkdownViewerPlusPlus.sln
+        run: msbuild /t:Restore MarkdownViewerPlusPlus/MarkdownViewerPlusPlus.csproj
       
       - name: Build
         run: msbuild MarkdownViewerPlusPlus.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:normal
