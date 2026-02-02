@@ -28,7 +28,7 @@ jobs:
         uses: NuGet/setup-nuget@v2
       
       - name: Restore NuGet packages (packages.config)
-        run: nuget restore MarkdownViewerPlusPlus.sln
+        run: nuget restore MarkdownViewerPlusPlus.sln -PackagesDirectory packages
       
       - name: Restore PackageReferences
         run: msbuild /t:Restore MarkdownViewerPlusPlus.sln
