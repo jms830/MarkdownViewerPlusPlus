@@ -27,11 +27,10 @@ jobs:
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
       
-      - name: Restore NuGet packages
-        run: nuget restore MarkdownViewerPlusPlus.sln
-      
-      - name: Build
-        run: msbuild MarkdownViewerPlusPlus.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:normal
+      - name: Restore and Build
+        run: |
+          msbuild /t:Restore MarkdownViewerPlusPlus.sln
+          msbuild MarkdownViewerPlusPlus.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:normal
       
       - name: Verify DLL exists and show info
         shell: pwsh

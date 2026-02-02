@@ -88,6 +88,12 @@
     <StartProgram Condition="'$(Platform)'=='x64'">$(ProgramW6432)\Notepad++\notepad++.exe</StartProgram>
     <StartProgram Condition="'$(Platform)'=='x86'">$(MSBuildProgramFiles32)\Notepad++\notepad++.exe</StartProgram>
   </PropertyGroup>
+  <!-- UnmanagedExports.Repack.Upgrade for DLL exports (replaces old NppPlugin.DllExport) -->
+  <ItemGroup>
+    <PackageReference Include="UnmanagedExports.Repack.Upgrade" Version="1.2.1" GeneratePathProperty="true">
+      <ExcludeAssets>all</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlRenderer, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlRenderer.Core.1.5.1\lib\net462\HtmlRenderer.dll</HintPath>
@@ -264,37 +270,17 @@
     <None Include="Resources\Donate-PayPal-green.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildProjectDirectory)\PluginInfrastructure\DllExport\NppPlugin.DllExport.targets" />
-  <Import Condition="Exists('$(DevEnvDir)\..\..\VC\Auxiliary\Build')" Project="$(DevEnvDir)\..\..\VC\Auxiliary\Build\Microsoft.VCToolsVersion.default.props" />
+  <!-- Import UnmanagedExports.Repack.Upgrade targets for DLL export (must be after Microsoft.CSharp.targets) -->
+  <Import Condition="Exists($(PkgUnmanagedExports_Repack_Upgrade))" Project="$(PkgUnmanagedExports_Repack_Upgrade)\build\UnmanagedExports.Repack.Upgrade.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   -->
   <Target Name="AfterBuild">
-    <!-- Detect VC Tools path for CI/standalone MSBuild (when DevEnvDir is not set) -->
-    <PropertyGroup>
-      <!-- Try VS2022 Enterprise (GitHub Actions) -->
-      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC')">$([System.IO.Directory]::GetDirectories('C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC')[0])\bin\Hostx64\x86</VCToolsDir>
-      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC') AND '$(Platform)' == 'x64'">$([System.IO.Directory]::GetDirectories('C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC')[0])\bin\Hostx64\x64</VCToolsDir>
-      <!-- Try VS2022 BuildTools -->
-      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC')">$([System.IO.Directory]::GetDirectories('C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC')[0])\bin\Hostx64\x86</VCToolsDir>
-      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC') AND '$(Platform)' == 'x64'">$([System.IO.Directory]::GetDirectories('C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC')[0])\bin\Hostx64\x64</VCToolsDir>
-      <!-- Try VS2022 Community/Professional -->
-      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC')">$([System.IO.Directory]::GetDirectories('C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC')[0])\bin\Hostx64\x86</VCToolsDir>
-      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC')">$([System.IO.Directory]::GetDirectories('C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC')[0])\bin\Hostx64\x86</VCToolsDir>
-    </PropertyGroup>
-    <Message Text="VCToolsDir detected: $(VCToolsDir)" Importance="high" Condition="'$(VCToolsDir)' != ''" />
-    <Message Text="WARNING: VCToolsDir not detected, DllExport may not run" Importance="high" Condition="'$(VCToolsDir)' == '' AND '$(DevEnvDir)' == ''" />
-    <Message Text="DEBUG: DevEnvDir='$(DevEnvDir)' Platform='$(Platform)' TargetPath='$(TargetPath)'" Importance="high" />
+    <!-- DllExport is now handled automatically by UnmanagedExports.Repack.Upgrade targets -->
     
-    <!-- Visual Studio < 2017 (from IDE) -->
-    <DllExportTask Condition="Exists('$(DevEnvDir)\..\..\VC\bin')" Platform="$(Platform)" PlatformTarget="$(PlatformTarget)" CpuType="$(CpuType)" EmitDebugSymbols="$(DebugSymbols)" DllExportAttributeAssemblyName="$(DllExportAttributeAssemblyName)" DllExportAttributeFullName="$(DllExportAttributeFullName)" Timeout="$(DllExportTimeout)" KeyContainer="$(KeyContainerName)$(AssemblyKeyContainerName)" KeyFile="$(KeyOriginatorFile)" ProjectDirectory="$(MSBuildProjectDirectory)" InputFileName="$(TargetPath)" FrameworkPath="$(TargetedFrameworkDir);$(TargetFrameworkDirectory)" LibToolPath="$(DevEnvDir)\..\..\VC\bin" LibToolDllPath="$(DevEnvDir)" SdkPath="$(SDK40ToolsPath)" />
-    <!-- Visual Studio >= 2017 (from IDE) -->
-    <DllExportTask Condition="Exists('$(DevEnvDir)\..\..\VC\Tools\MSVC\$(VCToolsVersion)\bin\Host$(Platform)\$(Platform)')" Platform="$(Platform)" PlatformTarget="$(PlatformTarget)" CpuType="$(CpuType)" EmitDebugSymbols="$(DebugSymbols)" DllExportAttributeAssemblyName="$(DllExportAttributeAssemblyName)" DllExportAttributeFullName="$(DllExportAttributeFullName)" Timeout="$(DllExportTimeout)" KeyContainer="$(KeyContainerName)$(AssemblyKeyContainerName)" KeyFile="$(KeyOriginatorFile)" ProjectDirectory="$(MSBuildProjectDirectory)" InputFileName="$(TargetPath)" FrameworkPath="$(TargetedFrameworkDir);$(TargetFrameworkDirectory)" LibToolPath="$(DevEnvDir)\..\..\VC\Tools\MSVC\$(VCToolsVersion)\bin\Host$(Platform)\$(Platform)" LibToolDllPath="$(DevEnvDir)" SdkPath="$(SDK40ToolsPath)" />
-    <!-- CI/Standalone MSBuild (DevEnvDir not set, use detected VCToolsDir) -->
-    <!-- Note: DevEnvDir is unset (not empty) when running outside VS, so we check for VCToolsDir presence and existence -->
-    <DllExportTask Condition="'$(VCToolsDir)' != '' AND Exists('$(VCToolsDir)')" Platform="$(Platform)" PlatformTarget="$(PlatformTarget)" CpuType="$(CpuType)" EmitDebugSymbols="$(DebugSymbols)" DllExportAttributeAssemblyName="$(DllExportAttributeAssemblyName)" DllExportAttributeFullName="$(DllExportAttributeFullName)" Timeout="$(DllExportTimeout)" KeyContainer="$(KeyContainerName)$(AssemblyKeyContainerName)" KeyFile="$(KeyOriginatorFile)" ProjectDirectory="$(MSBuildProjectDirectory)" InputFileName="$(TargetPath)" FrameworkPath="$(TargetedFrameworkDir);$(TargetFrameworkDirectory)" LibToolPath="$(VCToolsDir)" LibToolDllPath="" SdkPath="$(SDK40ToolsPath)" />
+    <!-- Optional: Copy to local Notepad++ for debugging -->
     <Message Condition="Exists('C:\Program Files (x86)\Notepad++\plugins\') AND '$(PlatformTarget)'=='x86'" Text="Copying to C:\Program Files (x86)\Notepad++\plugins\" Importance="high" />
     <Copy Condition="Exists('C:\Program Files (x86)\Notepad++\plugins\') AND '$(PlatformTarget)'=='x86'" SourceFiles="$(TargetPath)" DestinationFolder="C:\Program Files (x86)\Notepad++\plugins\" ContinueOnError="false" />
     <Message Condition="Exists('C:\Program Files\Notepad++\plugins\') AND '$(PlatformTarget)'=='x86'" Text="Copying to C:\Program Files\Notepad++\plugins\" Importance="high" />
