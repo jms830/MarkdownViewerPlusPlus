@@ -1,4 +1,4 @@
-﻿using com.insanitydesign.MarkdownViewerPlusPlus.Properties;
+using com.insanitydesign.MarkdownViewerPlusPlus.Properties;
 using com.insanitydesign.MarkdownViewerPlusPlus.Windows;
 using Kbg.NppPluginNET;
 using Kbg.NppPluginNET.PluginInfrastructure;
@@ -112,7 +112,7 @@ namespace com.insanitydesign.MarkdownViewerPlusPlus.Forms
             _nppTbData.dlgID = this.markdownViewer.commandId;
             _nppTbData.uMask = NppTbMsg.DWS_DF_CONT_RIGHT | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
             _nppTbData.hIconTab = (uint)toolbarIcon.Handle;
-            _nppTbData.pszModuleName = Main.PluginName;
+            _nppTbData.pszModuleName = Main.PluginName + ".dll";
             IntPtr _ptrNppTbData = Marshal.AllocHGlobal(Marshal.SizeOf(_nppTbData));
             Marshal.StructureToPtr(_nppTbData, _ptrNppTbData, false);
             //Register dockable window and hide initially
