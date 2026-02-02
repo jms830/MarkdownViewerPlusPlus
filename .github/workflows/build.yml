@@ -30,17 +30,26 @@ jobs:
       - name: Restore NuGet packages (packages.config)
         run: nuget restore MarkdownViewerPlusPlus/packages.config -PackagesDirectory packages -SolutionDirectory .
       
-      - name: Setup Visual Studio environment
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.platform }}
+      - name: Download 3F/DllExport manager
+        shell: pwsh
+        run: |
+          Write-Host "Downloading DllExport.bat manager..."
+          # Use direct GitHub releases URL (the github.io URL redirects and may fail)
+          Invoke-WebRequest -Uri "https://github.com/3F/DllExport/releases/download/1.8.1/DllExport.bat" -OutFile "DllExport.bat"
+          if (Test-Path "DllExport.bat") {
+            Write-Host "DllExport.bat downloaded successfully"
+            Get-Item "DllExport.bat" | Select-Object Name, Length
+          } else {
+            Write-Error "Failed to download DllExport.bat"
+            exit 1
+          }
+      
+      - name: Restore 3F/DllExport package
+        shell: cmd
+        run: DllExport.bat -action Restore -dxp-version 1.8.1
       
       - name: Build
-        shell: cmd
-        run: |
-          REM Set DevEnvDir for DllExportTask to find VC tools
-          set "DevEnvDir=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\"
-          msbuild MarkdownViewerPlusPlus.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:normal
+        run: msbuild MarkdownViewerPlusPlus.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:normal
       
       - name: Verify DLL exists and show info
         shell: pwsh
