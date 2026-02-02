@@ -272,10 +272,27 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <!-- Visual Studio < 2017 -->
+    <!-- Detect VC Tools path for CI/standalone MSBuild (when DevEnvDir is not set) -->
+    <PropertyGroup>
+      <!-- Try VS2022 Enterprise (GitHub Actions) -->
+      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC')">$([System.IO.Directory]::GetDirectories('C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC')[0])\bin\Hostx64\x86</VCToolsDir>
+      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC') AND '$(Platform)' == 'x64'">$([System.IO.Directory]::GetDirectories('C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC')[0])\bin\Hostx64\x64</VCToolsDir>
+      <!-- Try VS2022 BuildTools -->
+      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC')">$([System.IO.Directory]::GetDirectories('C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC')[0])\bin\Hostx64\x86</VCToolsDir>
+      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC') AND '$(Platform)' == 'x64'">$([System.IO.Directory]::GetDirectories('C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC')[0])\bin\Hostx64\x64</VCToolsDir>
+      <!-- Try VS2022 Community/Professional -->
+      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC')">$([System.IO.Directory]::GetDirectories('C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC')[0])\bin\Hostx64\x86</VCToolsDir>
+      <VCToolsDir Condition="'$(VCToolsDir)' == '' AND Exists('C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC')">$([System.IO.Directory]::GetDirectories('C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Tools\MSVC')[0])\bin\Hostx64\x86</VCToolsDir>
+    </PropertyGroup>
+    <Message Text="VCToolsDir detected: $(VCToolsDir)" Importance="high" Condition="'$(VCToolsDir)' != ''" />
+    <Message Text="WARNING: VCToolsDir not detected, DllExport may not run" Importance="high" Condition="'$(VCToolsDir)' == '' AND '$(DevEnvDir)' == ''" />
+    
+    <!-- Visual Studio < 2017 (from IDE) -->
     <DllExportTask Condition="Exists('$(DevEnvDir)\..\..\VC\bin')" Platform="$(Platform)" PlatformTarget="$(PlatformTarget)" CpuType="$(CpuType)" EmitDebugSymbols="$(DebugSymbols)" DllExportAttributeAssemblyName="$(DllExportAttributeAssemblyName)" DllExportAttributeFullName="$(DllExportAttributeFullName)" Timeout="$(DllExportTimeout)" KeyContainer="$(KeyContainerName)$(AssemblyKeyContainerName)" KeyFile="$(KeyOriginatorFile)" ProjectDirectory="$(MSBuildProjectDirectory)" InputFileName="$(TargetPath)" FrameworkPath="$(TargetedFrameworkDir);$(TargetFrameworkDirectory)" LibToolPath="$(DevEnvDir)\..\..\VC\bin" LibToolDllPath="$(DevEnvDir)" SdkPath="$(SDK40ToolsPath)" />
-    <!-- Visual Studio >= 2017 -->
+    <!-- Visual Studio >= 2017 (from IDE) -->
     <DllExportTask Condition="Exists('$(DevEnvDir)\..\..\VC\Tools\MSVC\$(VCToolsVersion)\bin\Host$(Platform)\$(Platform)')" Platform="$(Platform)" PlatformTarget="$(PlatformTarget)" CpuType="$(CpuType)" EmitDebugSymbols="$(DebugSymbols)" DllExportAttributeAssemblyName="$(DllExportAttributeAssemblyName)" DllExportAttributeFullName="$(DllExportAttributeFullName)" Timeout="$(DllExportTimeout)" KeyContainer="$(KeyContainerName)$(AssemblyKeyContainerName)" KeyFile="$(KeyOriginatorFile)" ProjectDirectory="$(MSBuildProjectDirectory)" InputFileName="$(TargetPath)" FrameworkPath="$(TargetedFrameworkDir);$(TargetFrameworkDirectory)" LibToolPath="$(DevEnvDir)\..\..\VC\Tools\MSVC\$(VCToolsVersion)\bin\Host$(Platform)\$(Platform)" LibToolDllPath="$(DevEnvDir)" SdkPath="$(SDK40ToolsPath)" />
+    <!-- CI/Standalone MSBuild (DevEnvDir not set, use detected VCToolsDir) -->
+    <DllExportTask Condition="'$(DevEnvDir)' == '' AND '$(VCToolsDir)' != '' AND Exists('$(VCToolsDir)')" Platform="$(Platform)" PlatformTarget="$(PlatformTarget)" CpuType="$(CpuType)" EmitDebugSymbols="$(DebugSymbols)" DllExportAttributeAssemblyName="$(DllExportAttributeAssemblyName)" DllExportAttributeFullName="$(DllExportAttributeFullName)" Timeout="$(DllExportTimeout)" KeyContainer="$(KeyContainerName)$(AssemblyKeyContainerName)" KeyFile="$(KeyOriginatorFile)" ProjectDirectory="$(MSBuildProjectDirectory)" InputFileName="$(TargetPath)" FrameworkPath="$(TargetedFrameworkDir);$(TargetFrameworkDirectory)" LibToolPath="$(VCToolsDir)" LibToolDllPath="" SdkPath="$(SDK40ToolsPath)" />
     <Message Condition="Exists('C:\Program Files (x86)\Notepad++\plugins\') AND '$(PlatformTarget)'=='x86'" Text="Copying to C:\Program Files (x86)\Notepad++\plugins\" Importance="high" />
     <Copy Condition="Exists('C:\Program Files (x86)\Notepad++\plugins\') AND '$(PlatformTarget)'=='x86'" SourceFiles="$(TargetPath)" DestinationFolder="C:\Program Files (x86)\Notepad++\plugins\" ContinueOnError="false" />
     <Message Condition="Exists('C:\Program Files\Notepad++\plugins\') AND '$(PlatformTarget)'=='x86'" Text="Copying to C:\Program Files\Notepad++\plugins\" Importance="high" />
