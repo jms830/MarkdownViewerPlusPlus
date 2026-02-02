@@ -30,8 +30,22 @@ jobs:
       - name: Restore NuGet packages (packages.config)
         run: nuget restore MarkdownViewerPlusPlus/packages.config -PackagesDirectory packages -SolutionDirectory .
       
-      - name: Restore PackageReferences
-        run: msbuild /t:Restore MarkdownViewerPlusPlus/MarkdownViewerPlusPlus.csproj
+      - name: Download 3F/DllExport manager
+        shell: pwsh
+        run: |
+          Write-Host "Downloading DllExport.bat manager..."
+          Invoke-WebRequest -Uri "https://3F.github.io/DllExport/releases/latest/manager/" -OutFile "DllExport.bat"
+          if (Test-Path "DllExport.bat") {
+            Write-Host "DllExport.bat downloaded successfully"
+            Get-Item "DllExport.bat" | Select-Object Name, Length
+          } else {
+            Write-Error "Failed to download DllExport.bat"
+            exit 1
+          }
+      
+      - name: Restore 3F/DllExport package
+        shell: cmd
+        run: DllExport.bat -action Restore -dxp-version 1.8.1
       
       - name: Build
         run: msbuild MarkdownViewerPlusPlus.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:normal

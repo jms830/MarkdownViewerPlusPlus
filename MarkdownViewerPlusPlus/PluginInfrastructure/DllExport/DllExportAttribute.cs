@@ -1,14 +1,17 @@
 // NPP plugin platform for .Net v0.94.00 by Kasper B. Graversen etc.
+// Modified to use 3F/DllExport which fixes NaN IL assembler issues
 using System;
 using System.Runtime.InteropServices;
 
 namespace RGiesecke.DllExport
 {
     /// <summary>
-    /// The fully qualified type name must be <c>RGiesecke.DllExport.DllExportAttribute</c> in order to work with the pre-configured task in <c>UnmanagedExports.Repack.Upgrade.targets</c>.
-    /// This implementation could be avoided if we referenced the <c>RGiesecke.DllExport.Metadata</c> assembly, but then it will look like a runtime dependency, and be copied to the build output directory.
+    /// The fully qualified type name must be <c>RGiesecke.DllExport.DllExportAttribute</c> in order to work with 3F/DllExport.
+    /// This local implementation avoids a runtime reference to DllExport.dll which would be copied to output.
     /// <para>
-    /// See <seealso href="https://github.com/stevenengland/UnmanagedExports.Repack.Upgrade/blob/master/nuget/build/UnmanagedExports.Repack.Upgrade.targets"/>
+    /// 3F/DllExport uses a modified IL Assembler that correctly handles double.NaN values which caused
+    /// "syntax error at token '-' in: IL_0008: ldc.r8 -nan(ind)" errors with other DllExport implementations.
+    /// See <seealso href="https://github.com/3F/DllExport"/>
     /// </para>
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
