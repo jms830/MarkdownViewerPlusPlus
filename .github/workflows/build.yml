@@ -31,7 +31,7 @@ jobs:
         run: nuget restore MarkdownViewerPlusPlus.sln
       
       - name: Build
-        run: msbuild MarkdownViewerPlusPlus.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:normal
+        run: msbuild MarkdownViewerPlusPlus.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:detailed /clp:ShowTimestamp
       
       - name: Verify DLL exists and show info
         shell: pwsh

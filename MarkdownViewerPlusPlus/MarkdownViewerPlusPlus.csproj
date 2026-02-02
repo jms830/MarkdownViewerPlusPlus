@@ -286,6 +286,8 @@
     </PropertyGroup>
     <Message Text="VCToolsDir detected: $(VCToolsDir)" Importance="high" Condition="'$(VCToolsDir)' != ''" />
     <Message Text="WARNING: VCToolsDir not detected, DllExport may not run" Importance="high" Condition="'$(VCToolsDir)' == '' AND '$(DevEnvDir)' == ''" />
+    <Message Text="DEBUG: DevEnvDir='$(DevEnvDir)' Platform='$(Platform)' TargetPath='$(TargetPath)'" Importance="high" />
+    <Message Text="DEBUG: Checking CI DllExportTask condition: DevEnvDir empty='$([System.String]::IsNullOrEmpty('$(DevEnvDir)'))', VCToolsDir='$(VCToolsDir)', VCToolsDir exists=$([System.IO.Directory]::Exists('$(VCToolsDir)'))" Importance="high" Condition="'$(VCToolsDir)' != ''" />
     
     <!-- Visual Studio < 2017 (from IDE) -->
     <DllExportTask Condition="Exists('$(DevEnvDir)\..\..\VC\bin')" Platform="$(Platform)" PlatformTarget="$(PlatformTarget)" CpuType="$(CpuType)" EmitDebugSymbols="$(DebugSymbols)" DllExportAttributeAssemblyName="$(DllExportAttributeAssemblyName)" DllExportAttributeFullName="$(DllExportAttributeFullName)" Timeout="$(DllExportTimeout)" KeyContainer="$(KeyContainerName)$(AssemblyKeyContainerName)" KeyFile="$(KeyOriginatorFile)" ProjectDirectory="$(MSBuildProjectDirectory)" InputFileName="$(TargetPath)" FrameworkPath="$(TargetedFrameworkDir);$(TargetFrameworkDirectory)" LibToolPath="$(DevEnvDir)\..\..\VC\bin" LibToolDllPath="$(DevEnvDir)" SdkPath="$(SDK40ToolsPath)" />
